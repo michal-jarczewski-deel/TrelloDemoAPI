@@ -1,13 +1,12 @@
 package e2e;
 
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,18 +26,29 @@ public class MoveCardBetweenListsTest {
     private static String secondListId;
     private static String cardId;
 
+    private static RequestSpecBuilder reqSpecBuilder;
+    private static RequestSpecification reqSpec;
+
+    @BeforeAll
+    public static void beforeAll() {
+        reqSpecBuilder = new RequestSpecBuilder();
+        reqSpecBuilder.addQueryParam("key", KEY);
+        reqSpecBuilder.addQueryParam("token", TOKEN);
+        reqSpecBuilder.setContentType(ContentType.JSON);
+
+        reqSpec = reqSpecBuilder.build();
+    }
+
     @Test
     @Order(1)
     public void createNewBoard() {
         Response response = given()
-                .queryParam("key", KEY)
-                .queryParam("token", TOKEN)
+                .spec(reqSpec)
                 .queryParam("name", "My e2e board")
                 .queryParam("defaultLists", false)
-                .contentType(ContentType.JSON)
-        .when()
-                .request(Method.POST, BASE_URL+ BOARDS)
-        .then()
+                .when()
+                .request(Method.POST, BASE_URL + BOARDS)
+                .then()
                 .statusCode(200)
                 .extract()
                 .response();
@@ -53,13 +63,11 @@ public class MoveCardBetweenListsTest {
     @Order(2)
     public void createFirstList() {
         Response response = given()
-                .queryParam("key", KEY)
-                .queryParam("token", TOKEN)
+                .spec(reqSpec)
                 .queryParam("name", "First list")
-                .contentType(ContentType.JSON)
-        .when()
+                .when()
                 .request(Method.POST, BASE_URL + BOARDS + boardId + LISTS)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .response();
@@ -74,13 +82,11 @@ public class MoveCardBetweenListsTest {
     @Order(3)
     public void createSecondList() {
         Response response = given()
-                .queryParam("key", KEY)
-                .queryParam("token", TOKEN)
+                .spec(reqSpec)
                 .queryParam("name", "Second list")
-                .contentType(ContentType.JSON)
-        .when()
+                .when()
                 .request(Method.POST, BASE_URL + BOARDS + boardId + LISTS)
-        .then()
+                .then()
                 .statusCode(200)
                 .extract()
                 .response();
@@ -95,11 +101,9 @@ public class MoveCardBetweenListsTest {
     @Order(4)
     public void createCardAndAddItToFirstList() {
         Response response = given()
-                .queryParam("key", KEY)
-                .queryParam("token", TOKEN)
+                .spec(reqSpec)
                 .queryParam("name", "New card")
                 .queryParam("idList", firstListId)
-                .contentType(ContentType.JSON)
                 .when()
                 .request(Method.POST, BASE_URL + CARDS)
                 .then()
@@ -117,11 +121,9 @@ public class MoveCardBetweenListsTest {
     @Order(5)
     public void moveCardToSecondList() {
         Response response = given()
-                .queryParam("key", KEY)
-                .queryParam("token", TOKEN)
+                .spec(reqSpec)
                 .queryParam("name", "New card")
                 .queryParam("idList", secondListId)
-                .contentType(ContentType.JSON)
                 .when()
                 .request(Method.PUT, BASE_URL + CARDS + cardId)
                 .then()
@@ -137,12 +139,10 @@ public class MoveCardBetweenListsTest {
     @Order(6)
     public void deleteBoard() {
         given()
-                .queryParam("key", KEY)
-                .queryParam("token", TOKEN)
-                .contentType(ContentType.JSON)
-       .when()
+                .spec(reqSpec)
+                .when()
                 .request(Method.DELETE, BASE_URL + BOARDS + boardId)
-       .then()
+                .then()
                 .statusCode(200);
     }
 }
