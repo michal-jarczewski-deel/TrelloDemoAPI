@@ -1,3 +1,5 @@
+package board;
+
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
@@ -7,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BoardTest {
@@ -61,7 +64,7 @@ public class BoardTest {
                 .queryParam("key", key)
                 .queryParam("token", token)
                 .queryParam("name", "New Trello board without default lists")
-                .queryParam("defaultLists", "false")
+                .queryParam("defaultLists", false)
                 .contentType(ContentType.JSON)
                 .when()
                 .request(Method.POST, "https://api.trello.com/1/boards/")
@@ -71,7 +74,7 @@ public class BoardTest {
                 .response();
 
         JsonPath json = response.jsonPath();
-        assertEquals("New Trello board without default lists", json.get("name"));
+        assertThat((String) json.get("name")).isEqualTo("New Trello board without default lists");
 
         String boardId = json.get("id");
 
@@ -87,12 +90,58 @@ public class BoardTest {
                 .extract()
                 .response();
 
-        System.out.println(responseGet.asString());
-
         JsonPath jsonGet = responseGet.jsonPath();
         List<String> idList = jsonGet.getList("id");
 
-        assertEquals(0, idList.size());
+        assertThat(idList).hasSize(0);
+
+        // Remove previously created Trello board
+        given()
+                .queryParam("key", key)
+                .queryParam("token", token)
+                .contentType(ContentType.JSON)
+                .when()
+                .request(Method.DELETE, "https://api.trello.com/1/boards/" + boardId)
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    public void createNewBoardWithDefaultLists() {
+        Response response = given()
+                .queryParam("key", key)
+                .queryParam("token", token)
+                .queryParam("name", "New Trello board with default lists added")
+                .queryParam("defaultLists", true)
+                .contentType(ContentType.JSON)
+                .when()
+                .request(Method.POST, "https://api.trello.com/1/boards/")
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        JsonPath json = response.jsonPath();
+        assertThat((String) json.get("name")).isEqualTo("New Trello board with default lists added");
+
+        String boardId = json.get("id");
+
+        // Send GET request to make sure there are three lists added to the new board by default
+        Response responseGet = given()
+                .queryParam("key", key)
+                .queryParam("token", token)
+                .contentType(ContentType.JSON)
+                .when()
+                .request(Method.GET, "https://api.trello.com/1/boards/" + boardId + "/lists/")
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        JsonPath jsonGet = responseGet.jsonPath();
+        List<String> nameList = jsonGet.getList("name");
+
+        assertThat(nameList).hasSize(3).containsExactly("To Do", "Doing", "Done");
 
         // Remove previously created Trello board
         given()
