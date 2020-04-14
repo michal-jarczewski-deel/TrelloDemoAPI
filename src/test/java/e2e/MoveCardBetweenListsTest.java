@@ -1,7 +1,6 @@
 package e2e;
 
 import base.BaseTest;
-import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.MethodOrderer;
@@ -28,7 +27,7 @@ public class MoveCardBetweenListsTest extends BaseTest {
                 .queryParam("name", "My e2e board")
                 .queryParam("defaultLists", false)
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS)
+                .post(BOARDS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -47,7 +46,7 @@ public class MoveCardBetweenListsTest extends BaseTest {
                 .spec(reqSpec)
                 .queryParam("name", "First list")
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS + boardId + LISTS)
+                .post(BOARDS + boardId + LISTS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -66,7 +65,7 @@ public class MoveCardBetweenListsTest extends BaseTest {
                 .spec(reqSpec)
                 .queryParam("name", "Second list")
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS + boardId + LISTS)
+                .post(BOARDS + boardId + LISTS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -86,7 +85,7 @@ public class MoveCardBetweenListsTest extends BaseTest {
                 .queryParam("name", "New card")
                 .queryParam("idList", firstListId)
                 .when()
-                .request(Method.POST, BASE_URL + CARDS)
+                .post(CARDS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -106,7 +105,7 @@ public class MoveCardBetweenListsTest extends BaseTest {
                 .queryParam("name", "New card")
                 .queryParam("idList", secondListId)
                 .when()
-                .request(Method.PUT, BASE_URL + CARDS + cardId)
+                .put(CARDS + cardId)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -122,7 +121,7 @@ public class MoveCardBetweenListsTest extends BaseTest {
         given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.DELETE, BASE_URL + BOARDS + boardId)
+                .delete(BOARDS + boardId)
                 .then()
                 .statusCode(200);
     }

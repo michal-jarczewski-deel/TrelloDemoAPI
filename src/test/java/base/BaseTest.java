@@ -1,5 +1,6 @@
 package base;
 
+import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -19,6 +20,8 @@ public class BaseTest {
 
     @BeforeAll
     public static void beforeAll() {
+        RestAssured.baseURI = BASE_URL;
+
         reqSpecBuilder = new RequestSpecBuilder();
         reqSpecBuilder.addQueryParam("key", KEY);
         reqSpecBuilder.addQueryParam("token", TOKEN);
