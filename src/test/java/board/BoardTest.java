@@ -20,7 +20,7 @@ public class BoardTest extends BaseTest {
                 .spec(reqSpec)
                 .queryParam("name", "First board created from Rest Assured")
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS)
+                .request(Method.POST, BOARDS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -35,7 +35,7 @@ public class BoardTest extends BaseTest {
         given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.DELETE, BASE_URL + BOARDS + boardId)
+                .request(Method.DELETE, BOARDS + boardId)
                 .then()
                 .statusCode(200);
     }
@@ -45,7 +45,7 @@ public class BoardTest extends BaseTest {
         given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS)
+                .request(Method.POST, BOARDS)
                 .then()
                 .statusCode(400);
     }
@@ -57,7 +57,7 @@ public class BoardTest extends BaseTest {
                 .queryParam("name", "New Trello board without default lists")
                 .queryParam("defaultLists", false)
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS)
+                .request(Method.POST, BOARDS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -72,7 +72,7 @@ public class BoardTest extends BaseTest {
         Response responseGet = given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.GET, BASE_URL + BOARDS  + boardId + LISTS)
+                .request(Method.GET, BOARDS  + boardId + LISTS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -87,7 +87,7 @@ public class BoardTest extends BaseTest {
         given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.DELETE, BASE_URL + BOARDS + boardId)
+                .request(Method.DELETE, BOARDS + boardId)
                 .then()
                 .statusCode(200);
     }
@@ -99,7 +99,7 @@ public class BoardTest extends BaseTest {
                 .queryParam("name", "New Trello board with default lists added")
                 .queryParam("defaultLists", true)
                 .when()
-                .request(Method.POST, BASE_URL + BOARDS)
+                .request(Method.POST, BOARDS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -114,7 +114,7 @@ public class BoardTest extends BaseTest {
         Response responseGet = given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.GET, BASE_URL + BOARDS + boardId + LISTS)
+                .request(Method.GET, BOARDS + boardId + LISTS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -129,7 +129,7 @@ public class BoardTest extends BaseTest {
         given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.DELETE, BASE_URL + BOARDS + boardId)
+                .request(Method.DELETE, BOARDS + boardId)
                 .then()
                 .statusCode(200);
     }
