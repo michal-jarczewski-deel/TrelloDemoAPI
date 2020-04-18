@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static common.SharedMethods.cleanUp;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,12 +33,7 @@ public class BoardTest extends BaseTest {
         String boardId = json.get("id");
 
         // Remove previously created Trello board
-        given()
-                .spec(reqSpec)
-                .when()
-                .request(Method.DELETE, BOARDS + boardId)
-                .then()
-                .statusCode(200);
+        cleanUp(BOARDS + boardId);
     }
 
     @Test
@@ -72,7 +68,7 @@ public class BoardTest extends BaseTest {
         Response responseGet = given()
                 .spec(reqSpec)
                 .when()
-                .request(Method.GET, BOARDS  + boardId + LISTS)
+                .request(Method.GET, BOARDS + boardId + LISTS)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -84,12 +80,7 @@ public class BoardTest extends BaseTest {
         assertThat(idList).hasSize(0);
 
         // Remove previously created Trello board
-        given()
-                .spec(reqSpec)
-                .when()
-                .request(Method.DELETE, BOARDS + boardId)
-                .then()
-                .statusCode(200);
+        cleanUp(BOARDS + boardId);
     }
 
     @Test
@@ -126,11 +117,6 @@ public class BoardTest extends BaseTest {
         assertThat(nameList).hasSize(3).containsExactly("To Do", "Doing", "Done");
 
         // Remove previously created Trello board
-        given()
-                .spec(reqSpec)
-                .when()
-                .request(Method.DELETE, BOARDS + boardId)
-                .then()
-                .statusCode(200);
+        cleanUp(BOARDS + boardId);
     }
 }
