@@ -5,7 +5,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
-import static common.SharedMethods.cleanUp;
+import static common.SharedMethods.deleteResource;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,7 +42,7 @@ public class OrganizationsTest extends BaseTest {
 
         orgId = json.get("id");
 
-        cleanUp(ORGANIZATIONS + orgId);
+        deleteResource(ORGANIZATIONS + orgId);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class OrganizationsTest extends BaseTest {
         assertThat(jsonGet.getString("id")).isEqualTo(orgId);
         assertThat(jsonGet.getString("displayName")).isEqualTo("TestOrg");
 
-        cleanUp(ORGANIZATIONS + orgId);
+        deleteResource(ORGANIZATIONS + orgId);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class OrganizationsTest extends BaseTest {
         assertThat(jsonPUT.getString("id")).isEqualTo(orgId);
         assertThat(jsonPUT.getString("displayName")).isEqualTo("TestOrg2");
 
-        cleanUp(ORGANIZATIONS + orgId);
+        deleteResource(ORGANIZATIONS + orgId);
     }
 
     @Test

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static common.SharedMethods.cleanUp;
+import static common.SharedMethods.deleteResource;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ public class BoardTest extends BaseTest {
         String boardId = json.get("id");
 
         // Remove previously created Trello board
-        cleanUp(BOARDS + boardId);
+        deleteResource(BOARDS + boardId);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class BoardTest extends BaseTest {
         assertThat(idList).hasSize(0);
 
         // Remove previously created Trello board
-        cleanUp(BOARDS + boardId);
+        deleteResource(BOARDS + boardId);
     }
 
     @Test
@@ -117,6 +117,6 @@ public class BoardTest extends BaseTest {
         assertThat(nameList).hasSize(3).containsExactly("To Do", "Doing", "Done");
 
         // Remove previously created Trello board
-        cleanUp(BOARDS + boardId);
+        deleteResource(BOARDS + boardId);
     }
 }
