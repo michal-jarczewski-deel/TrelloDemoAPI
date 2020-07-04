@@ -60,7 +60,7 @@ public class BoardTest extends BaseTest {
                 .response();
 
         JsonPath json = response.jsonPath();
-        assertThat((String) json.get("name")).isEqualTo("New Trello board without default lists");
+        assertThat(json.getString("name")).isEqualTo("New Trello board without default lists");
 
         String boardId = json.get("id");
 
@@ -97,7 +97,7 @@ public class BoardTest extends BaseTest {
                 .response();
 
         JsonPath json = response.jsonPath();
-        assertThat((String) json.get("name")).isEqualTo("New Trello board with default lists added");
+        assertThat(json.getString("name")).isEqualTo("New Trello board with default lists added");
 
         String boardId = json.get("id");
 
