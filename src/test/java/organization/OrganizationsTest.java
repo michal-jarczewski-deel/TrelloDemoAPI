@@ -4,6 +4,7 @@ import base.BaseTest;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import trello.Organization;
 
 import static common.SharedMethods.deleteResource;
 import static io.restassured.RestAssured.given;
@@ -15,17 +16,18 @@ public class OrganizationsTest extends BaseTest {
 
     @Test
     public void createNewOrganizationWithAllData() {
-        String displayName = "Test";
-        String desc = "Long description of my organization";
-        String name = "unique_organization";
-        String website = "https://developer.atlassian.com/";
+        Organization org = new Organization();
+        org.setDisplayName("Test");
+        org.setDesc("Long description of my organization");
+        org.setName("unique_organization");
+        org.setWebsite("https://developer.atlassian.com/");
 
         Response response = given()
                 .spec(reqSpec)
-                .queryParam("displayName", displayName)
-                .queryParam("name", name)
-                .queryParam("desc", desc)
-                .queryParam("website", website)
+                .queryParam("displayName", org.getDisplayName())
+                .queryParam("desc", org.getDesc())
+                .queryParam("name", org.getName())
+                .queryParam("website", org.getWebsite())
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
@@ -35,10 +37,10 @@ public class OrganizationsTest extends BaseTest {
 
         JsonPath json = response.jsonPath();
 
-        assertThat(json.getString("displayName")).isEqualTo(displayName);
-        assertThat(json.getString("name")).isEqualTo(name);
-        assertThat(json.getString("desc")).isEqualTo(desc);
-        assertThat(json.getString("website")).isEqualTo(website);
+        assertThat(json.getString("displayName")).isEqualTo(org.getDisplayName());
+        assertThat(json.getString("name")).isEqualTo(org.getName());
+        assertThat(json.getString("desc")).isEqualTo(org.getDesc());
+        assertThat(json.getString("website")).isEqualTo(org.getWebsite());
 
         orgId = json.get("id");
 
@@ -47,9 +49,12 @@ public class OrganizationsTest extends BaseTest {
 
     @Test
     public void getExistingOrgById() {
+        Organization org = new Organization();
+        org.setDisplayName("TestOrg");
+
         Response createResponse = given()
                 .spec(reqSpec)
-                .queryParam("displayName", "TestOrg")
+                .queryParam("displayName", org.getDisplayName())
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
@@ -72,14 +77,14 @@ public class OrganizationsTest extends BaseTest {
         JsonPath jsonGet = getResponse.jsonPath();
 
         assertThat(jsonGet.getString("id")).isEqualTo(orgId);
-        assertThat(jsonGet.getString("displayName")).isEqualTo("TestOrg");
+        assertThat(jsonGet.getString("displayName")).isEqualTo(org.getDisplayName());
 
         deleteResource(ORGANIZATIONS + orgId);
     }
 
     @Test
     public void getProperErrorMessageWhenOrgDoesNotExist() {
-        orgId = "made5up5organization5ID9";
+        orgId = "99";
 
         Response response = given()
                 .spec(reqSpec)
@@ -95,9 +100,12 @@ public class OrganizationsTest extends BaseTest {
 
     @Test
     public void updateOrganization() {
+        Organization org = new Organization();
+        org.setDisplayName("TestOrg");
+
         Response response = given()
                 .spec(reqSpec)
-                .queryParam("displayName", "TestOrg")
+                .queryParam("displayName", org.getDisplayName())
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
@@ -108,10 +116,11 @@ public class OrganizationsTest extends BaseTest {
         JsonPath json = response.jsonPath();
         orgId = json.get("id");
 
+        org.setDisplayName("NewTestOrg");
 
         Response responsePUT = given()
                 .spec(reqSpec)
-                .queryParam("displayName", "TestOrg2")
+                .queryParam("displayName", org.getDisplayName())
                 .when()
                 .put(ORGANIZATIONS + orgId)
                 .then()
@@ -122,7 +131,7 @@ public class OrganizationsTest extends BaseTest {
         JsonPath jsonPUT = responsePUT.jsonPath();
 
         assertThat(jsonPUT.getString("id")).isEqualTo(orgId);
-        assertThat(jsonPUT.getString("displayName")).isEqualTo("TestOrg2");
+        assertThat(jsonPUT.getString("displayName")).isEqualTo(org.getDisplayName());
 
         deleteResource(ORGANIZATIONS + orgId);
     }
