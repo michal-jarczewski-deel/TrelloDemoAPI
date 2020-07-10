@@ -48,7 +48,7 @@ public class OrganizationsTest extends BaseTest {
     }
 
     @Test
-    public void getExistingOrgById() {
+    public void getExistingOrganizationById() {
         Organization org = new Organization();
         org.setDisplayName("TestOrg");
 
@@ -83,7 +83,7 @@ public class OrganizationsTest extends BaseTest {
     }
 
     @Test
-    public void getProperErrorMessageWhenOrgDoesNotExist() {
+    public void getProperErrorMessageWhenOrganizationDoesNotExist() {
         orgId = "99";
 
         Response response = given()
@@ -137,9 +137,101 @@ public class OrganizationsTest extends BaseTest {
     }
 
     @Test
-    public void cannotAddOrgWithoutName() {
+    public void cannotAddOrganizationWithoutName() {
         given()
                 .spec(reqSpec)
+                .when()
+                .post(ORGANIZATIONS)
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void cannotCreateOrganizationWithLessThan3Characters() {
+        Organization org = new Organization();
+        org.setDisplayName("Test");
+        org.setName("aa");
+        org.setWebsite("htttp://www.something.com");
+
+        given()
+                .spec(reqSpec)
+                .queryParam("name", org.getName())
+                .when()
+                .post(ORGANIZATIONS)
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void cannotCreateOrganizationWithUpperCasedName() {
+        Organization org = new Organization();
+        org.setDisplayName("Test");
+        org.setName("TEST organization");
+
+        given()
+                .spec(reqSpec)
+                .queryParam("name", org.getDisplayName())
+                .queryParam("name", org.getName())
+                .when()
+                .post(ORGANIZATIONS)
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void cannotCreateOrganizationWithNotUniqueName() {
+        Organization org = new Organization();
+        org.setDisplayName("New Organization");
+        org.setName("test board");
+
+        Response firstOrg = given()
+                .spec(reqSpec)
+                .queryParam("name", org.getDisplayName())
+                .queryParam("name", org.getName())
+                .when()
+                .post(ORGANIZATIONS)
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        JsonPath json = firstOrg.jsonPath();
+        assertThat(json.getString("name")).isEqualTo(org.getName());
+
+        orgId = json.getString("id");
+
+        given()
+                .spec(reqSpec)
+                .queryParam("name", org.getName())
+                .when()
+                .post(ORGANIZATIONS)
+                .then()
+                .statusCode(400);
+
+        deleteResource(ORGANIZATIONS + orgId);
+    }
+
+    @Test
+    public void cannotCreateOrganizationWithWebsiteNotStartingFromHttpOrHttps() {
+        Organization org = new Organization();
+        org.setDisplayName("Test");
+        org.setWebsite("htttttttt://something.com");
+
+        given()
+                .spec(reqSpec)
+                .queryParam("name", org.getDisplayName())
+                .queryParam("name", org.getWebsite())
+                .when()
+                .post(ORGANIZATIONS)
+                .then()
+                .statusCode(400);
+
+        org.setWebsite("www.example.com");
+
+        given()
+                .spec(reqSpec)
+                .queryParam("name", org.getDisplayName())
+                .queryParam("name", org.getWebsite())
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
