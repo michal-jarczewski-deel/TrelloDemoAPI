@@ -183,11 +183,11 @@ public class OrganizationsTest extends BaseTest {
     public void cannotCreateOrganizationWithUpperCasedName() {
         Organization org = new Organization();
         org.setDisplayName("Test");
-        org.setName("TEST organization");
+        org.setName("TEST_ORGANIZATION");
 
         given()
                 .spec(reqSpec)
-                .queryParam("name", org.getDisplayName())
+                .queryParam("displayName", org.getDisplayName())
                 .queryParam("name", org.getName())
                 .when()
                 .post(ORGANIZATIONS)
@@ -199,11 +199,11 @@ public class OrganizationsTest extends BaseTest {
     public void cannotCreateOrganizationWithNotUniqueName() {
         Organization org = new Organization();
         org.setDisplayName("New Organization");
-        org.setName("test board");
+        org.setName("test_board");
 
         Response firstOrg = given()
                 .spec(reqSpec)
-                .queryParam("name", org.getDisplayName())
+                .queryParam("displayName", org.getDisplayName())
                 .queryParam("name", org.getName())
                 .when()
                 .post(ORGANIZATIONS)
@@ -236,8 +236,8 @@ public class OrganizationsTest extends BaseTest {
 
         given()
                 .spec(reqSpec)
-                .queryParam("name", org.getDisplayName())
-                .queryParam("name", org.getWebsite())
+                .queryParam("displayName", org.getDisplayName())
+                .queryParam("website", org.getWebsite())
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
@@ -247,8 +247,8 @@ public class OrganizationsTest extends BaseTest {
 
         given()
                 .spec(reqSpec)
-                .queryParam("name", org.getDisplayName())
-                .queryParam("name", org.getWebsite())
+                .queryParam("displayName", org.getDisplayName())
+                .queryParam("website", org.getWebsite())
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
