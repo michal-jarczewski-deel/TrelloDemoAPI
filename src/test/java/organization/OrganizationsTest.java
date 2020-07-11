@@ -32,7 +32,7 @@ public class OrganizationsTest extends BaseTest {
     @ParameterizedTest(name = "Display name: {0}, desc: {1}, name: {2}, website: {3}")
     @MethodSource("createOrganizationData")
     @Test
-    public void createNewOrganizationWithAllData(String displayName, String desc, String name, String website) {
+    public void createNewOrganizationWithValidData(String displayName, String desc, String name, String website) {
         Organization org = new Organization();
         org.setDisplayName(displayName);
         org.setDesc(desc);
