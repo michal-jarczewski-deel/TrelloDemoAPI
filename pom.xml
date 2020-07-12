@@ -8,58 +8,78 @@
     <artifactId>TrelloDemoAPI</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <maven-compiler-plugin>3.8.1</maven-compiler-plugin>
+        <java-version>1.11</java-version>
+        <rest-assured>4.3.0</rest-assured>
+        <junit-jupiter-api>5.6.1</junit-jupiter-api>
+        <json>20190722</json>
+        <javafaker>1.0.2</javafaker>
+        <assertj-core>3.15.0</assertj-core>
+        <jackson-databind>2.11.1</jackson-databind>
+        <lombok>1.18.12</lombok>
+        <junit-jupiter-params>5.6.2</junit-jupiter-params>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler-plugin}</version>
                 <configuration>
-                    <source>1.11</source>
-                    <target>1.11</target>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>4.3.0</version>
+            <version>${rest-assured}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.6.1</version>
+            <version>${junit-jupiter-api}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20190722</version>
+            <version>${json}</version>
         </dependency>
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
-            <version>1.0.2</version>
+            <version>${javafaker}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.15.0</version>
+            <version>${assertj-core}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.1</version>
+            <version>${jackson-databind}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>${lombok}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter-params}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
