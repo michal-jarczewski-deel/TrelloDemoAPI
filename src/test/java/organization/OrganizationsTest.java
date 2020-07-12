@@ -20,17 +20,27 @@ public class OrganizationsTest extends BaseTest {
 
     private static String orgId;
 
-    private static Stream<Arguments> createOrganizationData() {
+    private static Stream<Arguments> createOrganizationDataForHappyPaths() {
         return Stream.of(
-                Arguments.of("Test happy path", "Long description of my organization Long description of my organization", "unique_organization", "https://developer.atlassian.com/"),
+                Arguments.of("Test happy path", "Long description of my organization Long description of my organization",
+                        "unique_organization", "https://developer.atlassian.com/"),
                 Arguments.of("Need to have at least three letters", "Short description", "abc", "http://localhost:5000"),
                 Arguments.of("Special characters !@#$%^&*()", "desc", "can_have_numbers_too123", "https://google.com"),
                 Arguments.of("Unique name test", "Random desc", "must_be_unique_organization_name", "http://www.cnn.com"));
     }
 
+    private static Stream<Arguments> createOrganizationDataForBadPaths() {
+        return Stream.of(
+                Arguments.of("", "", "", ""),
+                Arguments.of("Too short Organizatiion name", "", "aa", "htttp://www.something.com"),
+                Arguments.of("Uppercased Organization name", "", "TEST_ORGANIZATION", ""),
+                Arguments.of("Not correct website address", "", "", "htttttttt://something.com"),
+                Arguments.of("Not correct website address2", "", "", "www.example.com"));
+    }
+
     @DisplayName("Create Organization with valid data")
     @ParameterizedTest(name = "Display name: {0}, desc: {1}, name: {2}, website: {3}")
-    @MethodSource("createOrganizationData")
+    @MethodSource("createOrganizationDataForHappyPaths")
     @Test
     public void createNewOrganizationWithValidData(String displayName, String desc, String name, String website) {
         Organization org = new Organization();
@@ -153,42 +163,23 @@ public class OrganizationsTest extends BaseTest {
         deleteResource(ORGANIZATIONS + orgId);
     }
 
+    @DisplayName("Attempt to create a new organization with invalid or missing data")
+    @ParameterizedTest(name = "Display name: {0}, desc: {1}, name: {2}, website: {3}")
+    @MethodSource("createOrganizationDataForBadPaths")
     @Test
-    public void cannotAddOrganizationWithoutName() {
-        given()
-                .spec(reqSpec)
-                .when()
-                .post(ORGANIZATIONS)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    public void cannotCreateOrganizationWithLessThan3Characters() {
+    public void attemptToCreateNewOrganizationWithInvalidOrMissingData(String displayName, String desc, String name, String website) {
         Organization org = new Organization();
-        org.setDisplayName("Test");
-        org.setName("aa");
-        org.setWebsite("htttp://www.something.com");
+        org.setDisplayName(displayName);
+        org.setDesc(desc);
+        org.setName(name);
+        org.setWebsite(website);
 
         given()
                 .spec(reqSpec)
-                .queryParam("name", org.getName())
-                .when()
-                .post(ORGANIZATIONS)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    public void cannotCreateOrganizationWithUpperCasedName() {
-        Organization org = new Organization();
-        org.setDisplayName("Test");
-        org.setName("TEST_ORGANIZATION");
-
-        given()
-                .spec(reqSpec)
-                .queryParam("displayName", org.getDisplayName())
-                .queryParam("name", org.getName())
+                .queryParam("displayName", displayName)
+                .queryParam("desc", desc)
+                .queryParam("name", name)
+                .queryParam("website", website)
                 .when()
                 .post(ORGANIZATIONS)
                 .then()
@@ -226,32 +217,5 @@ public class OrganizationsTest extends BaseTest {
                 .statusCode(400);
 
         deleteResource(ORGANIZATIONS + orgId);
-    }
-
-    @Test
-    public void cannotCreateOrganizationWithWebsiteNotStartingFromHttpOrHttps() {
-        Organization org = new Organization();
-        org.setDisplayName("Test");
-        org.setWebsite("htttttttt://something.com");
-
-        given()
-                .spec(reqSpec)
-                .queryParam("displayName", org.getDisplayName())
-                .queryParam("website", org.getWebsite())
-                .when()
-                .post(ORGANIZATIONS)
-                .then()
-                .statusCode(400);
-
-        org.setWebsite("www.example.com");
-
-        given()
-                .spec(reqSpec)
-                .queryParam("displayName", org.getDisplayName())
-                .queryParam("website", org.getWebsite())
-                .when()
-                .post(ORGANIZATIONS)
-                .then()
-                .statusCode(400);
     }
 }
