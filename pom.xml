@@ -16,7 +16,7 @@
         <json>20190722</json>
         <javafaker>1.0.2</javafaker>
         <assertj-core>3.15.0</assertj-core>
-        <jackson-databind>2.11.1</jackson-databind>
+        <jackson-databind>2.12.7.1</jackson-databind>
         <lombok>1.18.12</lombok>
         <junit-jupiter-params>5.6.2</junit-jupiter-params>
     </properties>
