@@ -13,7 +13,7 @@
         <java-version>1.11</java-version>
         <rest-assured>4.3.0</rest-assured>
         <junit-jupiter-api>5.6.1</junit-jupiter-api>
-        <json>20190722</json>
+        <json>20230227</json>
         <javafaker>1.0.2</javafaker>
         <assertj-core>3.15.0</assertj-core>
         <jackson-databind>2.11.1</jackson-databind>
